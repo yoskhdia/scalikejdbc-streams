@@ -1,0 +1,12 @@
+sudo: false
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+language: scala
+scala:
+  - 2.12.1
+  - 2.11.8
+jdk:
+  - oraclejdk8
