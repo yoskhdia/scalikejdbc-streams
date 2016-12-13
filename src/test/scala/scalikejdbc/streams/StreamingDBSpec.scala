@@ -3,9 +3,10 @@ package scalikejdbc.streams
 import org.scalatest._
 import scalikejdbc._
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 class StreamingDBSpec extends FlatSpec with Matchers {
+  implicit val executor = AsyncExecutor(ExecutionContext.global)
 
   "DB.stream" should "create DatabasePublisher" in {
     val publisher = DB stream {

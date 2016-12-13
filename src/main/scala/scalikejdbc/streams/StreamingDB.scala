@@ -5,9 +5,9 @@ import java.util.concurrent.atomic.AtomicLong
 import org.reactivestreams.{ Subscriber, Subscription }
 import scalikejdbc._
 
-import scala.concurrent.{ ExecutionContext, Promise }
-import scala.util.{ Failure, Success }
+import scala.concurrent.Promise
 import scala.util.control.NonFatal
+import scala.util.{ Failure, Success }
 
 class StreamingDB(
     executor: StreamingDB.Executor,
@@ -49,7 +49,7 @@ class StreamingDB(
             context.streamingResultPromise.future.onComplete {
               case Success(_) => context.tryOnComplete()
               case Failure(t) => context.tryOnError(t)
-            }(executor)
+            }(executor.executionContext)
           } catch { case NonFatal(ex) => context.tryOnError(ex) }
         }
       }
@@ -66,7 +66,7 @@ class StreamingDB(
   }
 
   protected[StreamingDB] def scheduleSynchronousStreaming(a: StreamingAction[_, _ <: WithExtractor], ctx: StreamingActionContext)(initialState: a.State): Unit = try {
-    executor.prepare.execute(new Runnable {
+    executor.execute(new Runnable {
       private[this] def str(l: Long) = if (l != Long.MaxValue) l else "oo"
 
       def run(): Unit = try {
@@ -252,7 +252,7 @@ class StreamingDB(
 }
 
 object StreamingDB {
-  type Executor = ExecutionContext
+  type Executor = AsyncExecutor
 
   // same as https://github.com/scalikejdbc/scalikejdbc/blob/2.5.0/scalikejdbc-core/src/main/scala/scalikejdbc/DB.scala#L151-L157
   private[this] def connectionPool(dbName: Any, context: DB.CPContext): ConnectionPool = Option(context match {

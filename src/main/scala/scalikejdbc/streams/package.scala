@@ -12,18 +12,18 @@ package object streams { self =>
     dbName: Any = ConnectionPool.DEFAULT_NAME
   )(
     implicit
-    ec: ExecutionContext,
+    executor: StreamingDB.Executor,
     context: DB.CPContext = DB.NoCPContext,
     settings: SettingsProvider = SettingsProvider.default
   ): DatabasePublisher[A] = {
-    val db = StreamingDB(dbName, ec)
+    val db = StreamingDB(dbName, executor)
     db.stream(sql)
   }
 
   implicit class StreamingDBConverter(val db: DB.type) extends AnyVal {
 
     def stream[A, E <: WithExtractor](sql: StreamingSQL[A, E])(implicit
-      ec: ExecutionContext,
+      executor: StreamingDB.Executor,
       context: DB.CPContext = DB.NoCPContext,
       settings: SettingsProvider = SettingsProvider.default): DatabasePublisher[A] = {
 
@@ -34,7 +34,7 @@ package object streams { self =>
   implicit class StreamingNamedDBConverter(val db: NamedDB) extends AnyVal {
 
     def stream[A, E <: WithExtractor](sql: StreamingSQL[A, E])(implicit
-      ec: ExecutionContext,
+      executor: StreamingDB.Executor,
       context: DB.CPContext = DB.NoCPContext,
       settings: SettingsProvider = SettingsProvider.default): DatabasePublisher[A] = {
 

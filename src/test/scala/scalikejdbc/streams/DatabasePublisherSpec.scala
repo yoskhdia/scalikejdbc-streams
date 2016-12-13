@@ -3,10 +3,10 @@ package scalikejdbc.streams
 import org.scalatest._
 import scalikejdbc._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Promise
+import scala.concurrent.{ ExecutionContext, Promise }
 
 class DatabasePublisherSpec extends AsyncFlatSpec with BeforeAndAfterAll with Matchers with LogSupport {
+  implicit val executor = AsyncExecutor(ExecutionContext.global)
 
   override protected def beforeAll(): Unit = {
     GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(singleLineMode = true)
