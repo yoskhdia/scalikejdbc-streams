@@ -10,8 +10,9 @@ class DatabasePublisherSpec extends AsyncFlatSpec with BeforeAndAfterAll with Ma
 
   override protected def beforeAll(): Unit = {
     GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(singleLineMode = true)
-    Class.forName("org.h2.Driver")
-    ConnectionPool.singleton("jdbc:h2:file:./target/scalikejdbc_streams_test", "user", "pass")
+    val poolSettings = ConnectionPoolSettings(driverName = "org.h2.Driver")
+    Class.forName(poolSettings.driverName)
+    ConnectionPool.singleton("jdbc:h2:file:./target/scalikejdbc_streams_test", "user", "pass", poolSettings)
 
     DB.localTx { implicit session =>
       sql"drop table if exists users".execute().apply()

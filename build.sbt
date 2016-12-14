@@ -3,7 +3,7 @@ import scalariform.formatter.preferences._
 
 name := "scalikejdbc-streams"
 
-version := "0.0.1-SNAPSHOT"
+version := "0.0.3-SNAPSHOT"
 
 scalaVersion := "2.11.8"
 

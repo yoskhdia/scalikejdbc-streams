@@ -2,8 +2,6 @@ package scalikejdbc
 
 import scalikejdbc.GeneralizedTypeConstraintsForWithExtractor.=:=
 
-import scala.concurrent.ExecutionContext
-
 package object streams { self =>
   final val DefaultFetchSize: Int = 1000
 

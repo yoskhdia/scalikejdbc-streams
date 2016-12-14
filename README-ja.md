@@ -37,3 +37,23 @@ val publisher = DB stream {
 }
 publisher.subscribe(???)
 ```
+
+コネクションプールの初期化などScalikeJDBCに関する使用法はドキュメントを参照してください
+http://scalikejdbc.org/documentation/configuration.html
+
+
+# Note
+
+MySQLやPostgreSQLなどではCURSOR(Streaming)を有効にするには、いくつかの設定が必要です。
+ScalikeJDBC-streamsではdriverNameが識別できる場合には、この設定を自動的に有効にします。
+現在はMySQLおよびPostgreSQLのみサポートしています。
+
+```scala
+import scalikejdbc._
+val poolSettings = ConnectionPoolSettings(driverName = "com.mysql.jdbc.Driver")
+Class.forName(poolSettings.driverName)
+ConnectionPool.singleton("jdbc:mysql://127.0.0.1/scalikejdbc_streams_test", "user", "pass", poolSettings)
+```
+
+scalikejdbc-configを使用すると、これらの設定をapplication.confに簡単に委譲することができます。
+http://scalikejdbc.org/documentation/configuration.html#scalikejdbc-config
