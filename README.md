@@ -57,3 +57,13 @@ ConnectionPool.singleton("jdbc:mysql://127.0.0.1/scalikejdbc_streams_test", "use
 
 With scalikejdbc-config you can easily delegate these settings to application.conf.
 http://scalikejdbc.org/documentation/configuration.html#scalikejdbc-config
+
+
+# ReactiveStreams TCK
+
+TCK is released in ReactiveStreams.
+https://github.com/reactive-streams/reactive-streams-jvm/tree/v1.0.0/tck
+ScalikeJDBC-streams passes PublisherVerification.
+However, although it is also described in Section [Structure of the TCK](https://github.com/reactive-streams/reactive-streams-jvm/tree/v1.0.0/tck#structure-of-the-tck),
+Some tests can not construct (meaningful) automatic test.
+If you have a good idea please send me a PullRequest!

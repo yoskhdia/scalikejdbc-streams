@@ -240,6 +240,14 @@ class StreamingDB(
         deferredError = new IllegalArgumentException("Requested count must not be <= 0 (see Reactive Streams spec, 3.9)")
         cancel()
       } else {
+        // If a large number of requests are signaled, it will continue to receive the request signal (even though it might not stabilize),
+        // even if it goes beyond Long.MaxValue. Because the record in the database is finite and streaming ends when it reaches its end.
+        // Also, if there is a request of Long.MaxValue + Long.MaxValue + 2 at the time of continuity check of the (first) streaming loop,
+        // it will be reset to Long.MinValue so there means no request, but the next request It will be signaled soon, so it would not be a serious problem.
+        // ReactiveStreams Spec 3.17 has "effectively unbounded"
+        // -> As it is not feasibly reachable with current or foreseen hardware within
+        //    a reasonable amount of time (1 element per nanosecond would take 292 years) to fulfill a demand of 2^63-1,
+        //    it is allowed for a Publisher to stop tracking demand beyond this point.
         if (!cancelRequested && remaining.getAndAdd(l) == 0L) restartStreaming()
       }
     }
