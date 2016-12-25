@@ -33,10 +33,13 @@ package object streams { self =>
 
     def stream[A, E <: WithExtractor](sql: StreamingSQL[A, E])(implicit
       executor: StreamingDB.Executor,
-      context: DB.CPContext = DB.NoCPContext,
-      settings: SettingsProvider = SettingsProvider.default): DatabasePublisher[A] = {
+      context: DB.CPContext = DB.NoCPContext): DatabasePublisher[A] = {
 
-      self.stream(sql, db.name)
+      // I think that it is better to use ConnectionPoolContext of NamedDB,
+      // but since it can not be referenced in this scope,
+      // so I am trying to receive it with implicit parameter.
+      // (In addition, since NamedDB persists one DBConnection inside statically, it is not suitable for streaming.)
+      self.stream(sql, db.name)(executor, context, db.settingsProvider)
     }
   }
 
