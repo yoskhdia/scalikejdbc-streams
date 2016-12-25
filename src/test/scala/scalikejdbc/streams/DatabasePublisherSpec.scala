@@ -5,16 +5,13 @@ import scalikejdbc._
 
 import scala.concurrent.{ ExecutionContext, Promise }
 
-class DatabasePublisherSpec extends AsyncFlatSpec with BeforeAndAfterAll with Matchers with LogSupport {
+class DatabasePublisherSpec extends AsyncFlatSpec with BeforeAndAfterAll with Matchers with LogSupport with TestDBSettings {
   implicit val executor = AsyncExecutor(ExecutionContext.global)
 
   override protected def beforeAll(): Unit = {
-    GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(singleLineMode = true)
-    val poolSettings = ConnectionPoolSettings(driverName = "org.h2.Driver")
-    Class.forName(poolSettings.driverName)
-    ConnectionPool.singleton("jdbc:h2:file:./target/scalikejdbc_streams_test", "user", "pass", poolSettings)
+    openDB()
 
-    DB.localTx { implicit session =>
+    loadFixtures { implicit session =>
       sql"drop table if exists users".execute().apply()
       sql"create table users(id INT)".execute().apply()
 
@@ -25,7 +22,7 @@ class DatabasePublisherSpec extends AsyncFlatSpec with BeforeAndAfterAll with Ma
   }
 
   override protected def afterAll(): Unit = {
-    ConnectionPool.closeAll()
+    closeDB()
   }
 
   "DatabasePublisher" should "be subscribed" in {
@@ -48,7 +45,7 @@ class DatabasePublisherSpec extends AsyncFlatSpec with BeforeAndAfterAll with Ma
       }
     }
 
-    val publisher = DB stream {
+    val publisher = db stream {
       sql"select id from users".map(r => r.int("id")).cursor
     }
 

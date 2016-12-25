@@ -36,6 +36,9 @@ class StreamingDB(
   protected[this] def createPublisher[A, E <: WithExtractor](action: StreamingAction[A, E]): DatabasePublisher[A] = {
     new DatabasePublisher[A] {
       override def subscribe(s: Subscriber[_ >: A]): Unit = {
+        if (s eq null) {
+          throw new NullPointerException("given a null Subscriber in subscribe. (see Reactive Streams spec, 1.9)")
+        }
         val context = new StreamingContext(s, self, bufferNext)
         val subscribed = try { s.onSubscribe(context); true } catch {
           case NonFatal(ex) =>
@@ -67,7 +70,7 @@ class StreamingDB(
 
   protected[StreamingDB] def scheduleSynchronousStreaming(a: StreamingAction[_, _ <: WithExtractor], ctx: StreamingActionContext)(initialState: a.State): Unit = try {
     executor.execute(new Runnable {
-      private[this] def str(l: Long) = if (l != Long.MaxValue) l else "oo"
+      private[this] def str(l: Long) = if (l != Long.MaxValue) l else "Inf"
 
       def run(): Unit = try {
         val debug = log.isDebugEnabled
@@ -79,7 +82,7 @@ class StreamingDB(
         do {
           try {
             if (debug)
-              log.debug((if (state eq null) "Starting initial" else "Restarting ") + " streaming action, realDemand = " + str(realDemand))
+              log.debug((if (state eq null) "Starting initial" else "Restarting") + " streaming action, realDemand = " + str(realDemand))
             if (ctx.cancelled) {
               if (ctx.deferredError ne null) throw ctx.deferredError
               if (state ne null) { // streaming cancelled before finishing
