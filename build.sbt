@@ -4,7 +4,7 @@ import de.johoop.testngplugin.TestNGPlugin._
 
 name := "scalikejdbc-streams"
 
-version := "0.0.3-SNAPSHOT"
+version := "1.0.0"
 
 scalaVersion := "2.11.8"
 
