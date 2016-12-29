@@ -8,7 +8,7 @@ trait TestDBSettings {
   lazy val dbName = Symbol(this.getClass.getSimpleName)
 
   protected def openDB(): Unit = {
-    val url = s"jdbc:h2:file:./target/ss_test_${dbName.name};LOG=0;CACHE_SIZE=65536;LOCK_MODE=0;UNDO_LOG=0"
+    val url = s"jdbc:h2:mem:streams_test_${dbName.name};LOG=0;CACHE_SIZE=65536;LOCK_MODE=0;UNDO_LOG=0"
     val user = "user"
     val password = "password"
     val poolSettings = ConnectionPoolSettings(driverName = "org.h2.Driver")
