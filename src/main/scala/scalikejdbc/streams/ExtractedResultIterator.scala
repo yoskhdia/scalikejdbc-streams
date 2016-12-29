@@ -19,7 +19,7 @@ abstract class ExtractedResultIterator[+A](rs: ResultSet, autoClose: Boolean)(ex
     else throw new NoSuchElementException("head on empty iterator")
   }
 
-  private[this] def update() {
+  private[this] def update(): Unit = {
     if (state == 0) {
       cached = fetchNext()
       if (state == 0) state = 1
