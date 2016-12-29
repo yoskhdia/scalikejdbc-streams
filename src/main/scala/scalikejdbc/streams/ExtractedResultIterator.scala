@@ -4,7 +4,7 @@ import java.sql.ResultSet
 
 import scalikejdbc.{ ResultSetCursor, WrappedResultSet }
 
-abstract class ExtractedResultIterator[A](rs: ResultSet, autoClose: Boolean)(extract: WrappedResultSet => A) extends BufferedIterator[A] with CloseableIterator[A] {
+abstract class ExtractedResultIterator[+A](rs: ResultSet, autoClose: Boolean)(extract: WrappedResultSet => A) extends BufferedIterator[A] with CloseableIterator[A] {
   private[this] var state = 0 // 0: no data, 1: cached, 2: finished
   private[this] var cached: A = null.asInstanceOf[A]
 
@@ -17,12 +17,6 @@ abstract class ExtractedResultIterator[A](rs: ResultSet, autoClose: Boolean)(ext
     update()
     if (state == 1) cached
     else throw new NoSuchElementException("head on empty iterator")
-  }
-
-  def headOption: Option[A] = {
-    update()
-    if (state == 1) Some(cached)
-    else None
   }
 
   private[this] def update() {
