@@ -2,6 +2,8 @@
 
 [![Release](https://jitpack.io/v/yoskhdia/scalikejdbc-streams.svg)](https://jitpack.io/#yoskhdia/scalikejdbc-streams)
 
+**This library [was moved in ScalikeJDBC officially](https://github.com/scalikejdbc/scalikejdbc/tree/master/scalikejdbc-streams). Since this Git repository will not be maintained, please use the official library.**
+
 It is assumed to be used in batch application.
 In JDBC, you need to keep connections constantly while subscribing to streaming. Therefore, please reconsider the connection pool setting and always be careful not to exhaust the connection.
 

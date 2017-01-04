@@ -2,6 +2,8 @@
 
 [![Release](https://jitpack.io/v/yoskhdia/scalikejdbc-streams.svg)](https://jitpack.io/#yoskhdia/scalikejdbc-streams)
 
+**このライブラリは、[ScalikeJDBC公式に取り込まれました](https://github.com/scalikejdbc/scalikejdbc/tree/master/scalikejdbc-streams)。このGitリポジトリではメンテナンスされませんので公式のライブラリを使用するようにしてください。**
+
 バッチアプリケーションでの利用を想定しています。
 JDBCでは、ストリーミングをサブスクライブしている間、常にコネクションを保持し続けている必要があります。そのため、コネクションプールの設定を見直すとともに、コネクションが枯渇しないよう常に注意してください。
 
