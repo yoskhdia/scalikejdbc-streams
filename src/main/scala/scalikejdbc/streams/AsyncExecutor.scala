@@ -37,7 +37,7 @@ object AsyncExecutor extends LogSupport {
 
       override def close(): Unit = if (autoClose) {
         executor.shutdownNow()
-        if (executor.awaitTermination(30, TimeUnit.SECONDS))
+        if (!executor.awaitTermination(30, TimeUnit.SECONDS))
           log.warn("Abandoning ThreadPoolExecutor (not yet destroyed after 30 seconds)")
       } else ()
     }
